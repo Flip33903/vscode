@@ -1,0 +1,119 @@
+{
+  "name": "autoforge-lmstudio",
+  "displayName": "AutoForge LM Studio",
+  "description": "Local LLM integration via LM Studio for chat, completions, and agent features",
+  "version": "0.1.0",
+  "publisher": "autoforge",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.126.0"
+  },
+  "categories": [
+    "AI",
+    "Chat",
+    "Machine Learning"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onLanguageModelChat:lmstudio",
+    "onCommand:autoforge.lmstudio.refreshModels",
+    "onCommand:autoforge.lmstudio.testConnection",
+    "*"
+  ],
+  "main": "./out/extension",
+  "enabledApiProposals": [
+    "defaultChatParticipant",
+    "chatParticipantAdditions",
+    "languageModelSystem"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "AutoForge LM Studio",
+      "properties": {
+        "autoforge.lmstudio.baseUrl": {
+          "type": "string",
+          "default": "http://localhost:1234/v1",
+          "description": "LM Studio OpenAI-compatible API base URL."
+        },
+        "autoforge.lmstudio.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Optional LM Studio API token (Bearer). Leave empty if auth is disabled."
+        },
+        "autoforge.lmstudio.chatModel": {
+          "type": "string",
+          "default": "",
+          "description": "Model ID for chat and agent requests. Empty uses the first loaded model."
+        },
+        "autoforge.lmstudio.completionModel": {
+          "type": "string",
+          "default": "",
+          "description": "Model ID for inline code completion. Empty uses chatModel."
+        },
+        "autoforge.lmstudio.enableInlineCompletions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable ghost-text inline completions powered by LM Studio."
+        },
+        "autoforge.lmstudio.temperature": {
+          "type": "number",
+          "default": 0.2,
+          "minimum": 0,
+          "maximum": 2,
+          "description": "Sampling temperature for completions."
+        },
+        "autoforge.lmstudio.maxTokens": {
+          "type": "number",
+          "default": 2048,
+          "minimum": 64,
+          "description": "Maximum tokens to generate per request."
+        }
+      }
+    },
+    "chatParticipants": [
+      {
+        "id": "autoforge.agent",
+        "name": "agent",
+        "fullName": "AutoForge Agent",
+        "description": "Local coding agent powered by LM Studio",
+        "isDefault": true,
+        "commands": [
+          {
+            "name": "explain",
+            "description": "Explain selected code or the active file"
+          },
+          {
+            "name": "fix",
+            "description": "Suggest fixes for errors in the active file"
+          }
+        ]
+      }
+    ],
+    "languageModelChatProviders": [
+      {
+        "vendor": "lmstudio",
+        "displayName": "LM Studio (Local)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "autoforge.lmstudio.refreshModels",
+        "title": "Refresh LM Studio Models",
+        "category": "AutoForge"
+      },
+      {
+        "command": "autoforge.lmstudio.testConnection",
+        "title": "Test LM Studio Connection",
+        "category": "AutoForge"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "node ../../node_modules/gulp/bin/gulp.js --gulpfile ../../build/gulpfile.extensions.mjs compile-extension:autoforge-lmstudio",
+    "watch": "node ../../node_modules/gulp/bin/gulp.js --gulpfile ../../build/gulpfile.extensions.mjs watch-extension:autoforge-lmstudio"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.125.0"
+  }
+}
